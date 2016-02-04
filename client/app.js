@@ -1,14 +1,14 @@
-var myApplication = {
-	controller : function(){},
-	view : function (controller) {
-		return m("h1", "hello world");
-	}
-}
+// var myApplication = {
+// 	controller : function(){},
+// 	view : function (controller) {
+// 		return m("h1", "hello world");
+// 	}
+// }
 
-var Todo = funtion (data){
+var Todo = function (data){
 	this.description = m.prop(data.description);
 	this.done = m.prop(false);
-}
+};
 
 
 var vm = {
@@ -22,11 +22,11 @@ var vm = {
 			}
 		};
 	}
-;
-				
+}
+
 function controller(){
 	vm.init();
-;
+}
 
 function view(){
 	return m("div", [
