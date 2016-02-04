@@ -10,10 +10,30 @@ var Todo = function (data){
 	this.done = m.prop(false);
 };
 
+Todo.list = function(){
+	var tasks = [];
+	var src = localStrage.getItem("todo");
+	if (src) {
+		var json = JSON.parse(src);
+		for (var i = 1; i < json.length; i++) {
+			tasks.push(new Todo(json[i]));
+		}
+	}
+};
+Todo.save = function (todoList) {
+	localStrage.getItem("todo",
+		JSON.stringfy(todoList.filter(function(todo){
+			return !todo.done();
+		}))
+
+	);
+}
+
 
 var vm = {
 	init : function (){
-		vm.list = m.prop([]);
+		// vm.list = m.prop([]);
+		vm.list = Todo.list();
 		vm.description = m.prop("");
 		vm.add  = function (){
 			if(vm.description()){
