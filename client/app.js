@@ -12,14 +12,16 @@ var Todo = function (data){
 
 Todo.list = function(){
 	var tasks = [];
-	var src = localStrage.getItem("todo");
+	var src = localStorage.getItem("todo");
 	if (src) {
 		var json = JSON.parse(src);
 		for (var i = 1; i < json.length; i++) {
 			tasks.push(new Todo(json[i]));
 		}
 	}
+    return m.prop(tasks);
 };
+
 Todo.save = function (todoList) {
 	localStrage.getItem("todo",
 		JSON.stringfy(todoList.filter(function(todo){
@@ -27,22 +29,28 @@ Todo.save = function (todoList) {
 		}))
 
 	);
-}
+};
 
 
 var vm = {
 	init : function (){
-		// vm.list = m.prop([]);
-		vm.list = Todo.list();
+        vm.list = Todo.list();
 		vm.description = m.prop("");
 		vm.add  = function (){
 			if(vm.description()){
 				vm.list().push(new Todo({description: vm.description()}));
 				vm.description("");
+                Todo.save(vm.list());
 			}
 		};
+        vm.check = function(value){
+            this.done(value);
+            Todo.save(vm.list);
+        }
 	}
-}
+};
+
+
 
 function controller(){
 	vm.init();
@@ -55,13 +63,14 @@ function view(){
 		m("table", vm.list().map(function (task){
 			return m("tr", [
 				m("td", [
-					m("input[type=checkbox]", {onclick : m.withAttr("checked" , task.done), value : task.done()})
+					m("input[type=checkbox]", {onclick : m.withAttr("checked" , vm.check.bind(task)), value : task.done()})
 					]),
 				m("td", {style: {textDecoration: task.done() ? "line-through" : "none"}}, task.description())
 			]);
 		}))
 	]);
 }
+
 
 
 // m.mount(document.getElementById("root"), myApplication);
